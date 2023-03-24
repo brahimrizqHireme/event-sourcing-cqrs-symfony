@@ -7,14 +7,16 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/mongodb-odm-bundle": "^4.5",
+        "eventsauce/eventsauce": "^3.2",
+        "eventsauce/message-repository-for-doctrine": "^0.4.1",
         "symfony/console": "5.4.*",
         "symfony/dotenv": "5.4.*",
         "symfony/flex": "^1.17|^2",
         "symfony/framework-bundle": "5.4.*",
         "symfony/runtime": "5.4.*",
+        "symfony/uid": "5.4.*",
         "symfony/yaml": "5.4.*"
-    },
-    "require-dev": {
     },
     "config": {
         "allow-plugins": {
@@ -61,8 +63,15 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": "true",
             "require": "5.4.*"
         }
+    },
+    "require-dev": {
+        "symfony/debug-bundle": "5.4.*",
+        "symfony/maker-bundle": "^1.48",
+        "symfony/monolog-bundle": "^3.0",
+        "symfony/stopwatch": "5.4.*",
+        "symfony/web-profiler-bundle": "5.4.*"
     }
 }
