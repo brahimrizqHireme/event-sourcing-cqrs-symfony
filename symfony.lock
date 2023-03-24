@@ -1,6 +1,6 @@
 {
     "doctrine/annotations": {
-        "version": "1.14",
+        "version": "2.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -11,17 +11,16 @@
             "config/routes/annotations.yaml"
         ]
     },
-    "doctrine/mongodb-odm-bundle": {
-        "version": "4.5",
+    "sensio/framework-extra-bundle": {
+        "version": "6.2",
         "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
+            "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "4.4",
-            "ref": "a6bc3544da98c97b2eafb2ef1e86bcc8093d96cf"
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
         },
         "files": [
-            "config/packages/doctrine_mongodb.yaml",
-            "src/Document/.gitignore"
+            "config/packages/sensio_framework_extra.yaml"
         ]
     },
     "symfony/console": {
@@ -87,6 +86,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "5.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.4",
+            "ref": "8bd5f27013fb1d7217191c548e340f0bdb11912c"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/monolog-bundle": {
         "version": "3.8",

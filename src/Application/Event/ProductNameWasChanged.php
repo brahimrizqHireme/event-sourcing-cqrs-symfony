@@ -3,14 +3,14 @@
 namespace App\Application\Event;
 
 use App\Application\ValueObject\ProductId;
+use EventSauce\EventSourcing\AggregateRootId;
 use EventSauce\EventSourcing\Serialization\SerializablePayload;
 
-class ProductWasCreated implements SerializablePayload
+class ProductNameWasChanged implements SerializablePayload
 {
     public function __construct(
-        private string $id,
-        private string $name,
-        private string $description
+        private string $aggregateRootId,
+        private string $name
     )
     {
     }
@@ -18,9 +18,9 @@ class ProductWasCreated implements SerializablePayload
     /**
      * @return string
      */
-    public function getId(): string
+    public function getAggregateRootId(): string
     {
-        return $this->id;
+        return $this->aggregateRootId;
     }
 
     /**
@@ -31,21 +31,12 @@ class ProductWasCreated implements SerializablePayload
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
 
     public function toPayload(): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->aggregateRootId,
             'name' => $this->name,
-            'description' => $this->description,
         ];
     }
 
@@ -54,7 +45,6 @@ class ProductWasCreated implements SerializablePayload
         return new self(
             $payload['id'],
             $payload['name'],
-            $payload['description'],
         );
     }
 }

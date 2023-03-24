@@ -5,15 +5,18 @@ namespace App\Infra\ServiceFactory;
 
 use App\Document\Product;
 use App\Domain\Db\MongodbClient;
+use App\Infra\AggregateRoot\EventAggregateRootRepository;
+use App\Infra\Decorator\EnrichMessageDecorator;
 use App\Infra\MessageRepository\MongoDBMessageRepository;
 use App\Infra\Projector\ProductProjector;
 use App\Infra\Repository\ProductRepository;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use EventSauce\EventSourcing\DefaultHeadersDecorator;
 use EventSauce\EventSourcing\EventSourcedAggregateRootRepository;
+use EventSauce\EventSourcing\MessageDecoratorChain;
 use EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer;
+use EventSauce\EventSourcing\Snapshotting\ConstructingAggregateRootRepositoryWithSnapshotting;
 use EventSauce\EventSourcing\SynchronousMessageDispatcher;
-use EventSauce\MessageRepository\DoctrineMessageRepository\DoctrineUuidV4MessageRepository;
-use MongoDB\Driver\Manager;
 
 class ProductRepositoryFactory
 {
@@ -26,13 +29,20 @@ class ProductRepositoryFactory
 
     public function create(): ProductRepository
     {
+
+        $decoratorChain = new MessageDecoratorChain(
+            new DefaultHeadersDecorator(),
+            new EnrichMessageDecorator()
+        );
+
         return new ProductRepository(
-            new EventSourcedAggregateRootRepository(
+            new EventAggregateRootRepository(
                 Product::class,
                 new MongoDBMessageRepository($this->client),
                 new SynchronousMessageDispatcher(
                     new ProductProjector(),
-                )
+                ),
+                $decoratorChain
             )
         );
     }

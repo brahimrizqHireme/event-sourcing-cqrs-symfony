@@ -2,6 +2,7 @@
 
 namespace App\Document;
 
+use App\Application\Event\ProductNameWasChanged;
 use App\Application\Event\ProductWasCreated;
 use App\Application\ValueObject\ProductId;
 use EventSauce\EventSourcing\AggregateRoot;
@@ -22,18 +23,35 @@ class Product implements AggregateRoot
         string $description
     ): Product
     {
-        $product = new static($id->toString());
-        $product->recordThat(new ProductWasCreated($id, $name, $description));
+        $product = new static($id);
+        $product->recordThat(new ProductWasCreated($id->toString(), $name, $description));
 
         return $product;
     }
 
     public function applyProductWasCreated(ProductWasCreated $event)
     {
-        $this->aggregateRootId = $event->getId();
-        $this->id = $event->getId()->toString();
+        $this->id = $event->getId();
         $this->name = $event->getName();
         $this->description = $event->getDescription();
+    }
+
+    public function changeProductName(
+        string $name
+    ): void
+    {
+        $this->recordThat(
+            new ProductNameWasChanged(
+                $this->aggregateRootId->toString(),
+                $name
+            )
+        );
+    }
+
+    public function applyProductNameWasChanged(ProductNameWasChanged $event)
+    {
+        $this->id = $event->getAggregateRootId();
+        $this->name = $event->getName();
     }
 
     /**

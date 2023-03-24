@@ -19,7 +19,7 @@ class ProductId implements AggregateRootId
     {
         return $this->id;
     }
-    public function generate(): self
+    public static function generate(): self
     {
         return new self(Uuid::v4()->__toString());
     }

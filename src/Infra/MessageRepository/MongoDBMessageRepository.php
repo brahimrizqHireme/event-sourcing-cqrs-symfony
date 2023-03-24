@@ -79,17 +79,17 @@ class MongoDBMessageRepository implements MessageRepository
         foreach ($messages as $index => $message) {
             $payload = $this->serializer->serializeMessage($message);
             $payload['headers'][Header::EVENT_ID] ??= \Symfony\Component\Uid\Uuid::v4()->__toString();
-
             $document = [
                     '_id' => $this->uuidEncoder->encodeString($payload['headers'][Header::EVENT_ID]),
                     'aggregate_root_id' => $this->uuidEncoder->encodeString($payload['headers'][Header::AGGREGATE_ROOT_ID]),
                     'version' => $payload['headers'][Header::AGGREGATE_ROOT_VERSION] ?? 0,
-                    'payload' => json_encode($payload, $this->jsonEncodeOptions),
+                    'created_at' => time(),
+                    'payload' => $payload['payload'],
+                    'headers' => $payload['headers'],
                 ] + $this->tableSchema->additionalColumns();
 
             $documents[] = $document;
         }
-
 
         try {
             $this->getCollection()->insertMany($documents, ['writeConcern' => new WriteConcern('majority')]);
@@ -101,8 +101,6 @@ class MongoDBMessageRepository implements MessageRepository
 
     public function retrieveAll(AggregateRootId $id): Generator
     {
-
-
         $options = [
             'sort' => ['version' => self::SORT_ASCENDING],
         ];
@@ -140,7 +138,7 @@ class MongoDBMessageRepository implements MessageRepository
     private function yieldMessagesFromPayloads(iterable $payloads): Generator
     {
         foreach ($payloads as $payload) {
-            yield $message = $this->serializer->unserializePayload(json_decode($payload, true));
+            yield $message = $this->serializer->unserializePayload($payload);
         }
 
         return isset($message)

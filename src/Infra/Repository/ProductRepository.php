@@ -21,9 +21,9 @@ class ProductRepository implements ProductRepositoryInterface
         $this->repository->persist($product);
     }
 
-    public function get(string $productId): Product
+    public function get(ProductId $productId): Product
     {
-        $tab = $this->repository->retrieve(ProductId::fromString($productId));
+        $tab = $this->repository->retrieve($productId);
         assert($tab instanceof Product);
 
         return $tab;
